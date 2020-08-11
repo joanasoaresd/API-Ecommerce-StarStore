@@ -24,7 +24,6 @@ public class UsersService {
 
 	public Optional<Users> getUsersById(Integer id) {
 		return this.repository.findById(id);
-
 	}
 
 	public Users setUserById(Integer id, Users user) {
