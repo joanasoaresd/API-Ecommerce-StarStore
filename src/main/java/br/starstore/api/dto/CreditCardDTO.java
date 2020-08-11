@@ -1,19 +1,32 @@
 package br.starstore.api.dto;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class CreditCardDTO {
 
-	private int cartNumber;
+	@Column(name = "cardNumber")
+	private int cardNumber;
+	@Column(name = "creditCardBanner")
 	private String creditCardBanner;
+	@Column(name = "cvv")
 	private int cvv;
+	@Column(name = "cardHolderName")
 	private String cardHolderName;
+	@Column(name = "expDate")
 	private String expDate;
 
+	public CreditCardDTO() {
+
+	}
+
 	public int getCartNumber() {
-		return cartNumber;
+		return cardNumber;
 	}
 
 	public void setCartNumber(int cartNumber) {
-		this.cartNumber = cartNumber;
+		this.cardNumber = cartNumber;
 	}
 
 	public String getCreditCardBanner() {

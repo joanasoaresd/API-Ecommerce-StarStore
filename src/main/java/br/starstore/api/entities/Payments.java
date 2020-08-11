@@ -1,5 +1,6 @@
 package br.starstore.api.entities;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,10 +13,29 @@ public class Payments {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int id;
 	private int clientId;
 	private String nameUser;
 	private double totalpayable;
+	@Embedded
 	private CreditCardDTO creditCard;
+	private int idCart;
+
+	public int getIdCart() {
+		return idCart;
+	}
+
+	public void setIdCart(int idCart) {
+		this.idCart = idCart;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public int getClientId() {
 		return clientId;
