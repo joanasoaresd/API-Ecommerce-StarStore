@@ -36,13 +36,14 @@ public class UsersService {
 		return this.repository.findAll();
 	}
 
+
 	public Optional<Users> getUsersById(Integer id) throws UserNotFoundException {
 		Optional<Users> user = this.repository.findById(id);
 		if(user.isEmpty()) {
 			throw new UserNotFoundException();
 		}
 		return user;
-
+	
 	}
 
 	public Users updateUserById(Integer id, Users user) throws UserNotFoundException {
