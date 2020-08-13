@@ -6,4 +6,5 @@ import br.starstore.api.entities.Payments;
 
 public interface PaymentsRepository extends JpaRepository<Payments, Integer> {
 
+	
 }
