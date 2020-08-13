@@ -1,11 +1,8 @@
 package br.starstore.api.modules.users;
 
-import java.util.List;
-import java.util.Optional;
+import javax.servlet.ServletException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +13,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.starstore.api.entities.Users;
+import br.starstore.api.exceptions.InvalidUserException;
+import br.starstore.api.exceptions.UserAlreadyExistsException;
+import br.starstore.api.exceptions.UserNotFoundException;
+import br.starstore.api.handlers.Response;
 
 @RestController
 public class UsersController {
@@ -23,36 +24,53 @@ public class UsersController {
 	@Autowired
 	private UsersService service;
 
-	@GetMapping("/ola")
-	public String oi() {
-		return "Olá Mundo!";
-
+	@PostMapping("/login")
+	@ResponseBody
+	public ResponseEntity<?> authenticationToken(@RequestBody Users user) throws ServletException {
+		try {
+			return new Response().sucefull(this.service.authenticate(user.getEmail(), user.getPassword()));
+		} catch (Exception e) {
+			return new Response().acessDenied(e.getMessage());
+		}
 	}
 
 	@GetMapping("/users")
 	@ResponseBody
-	public List<Users> getAllusers() {
-		return this.service.listAllUsers();
+	public ResponseEntity<?> getAllusers() {
+		return new Response().sucefull(this.service.listAllUsers());
 	}
 
 	@PostMapping("/users")
 	@ResponseBody
-	public Users createUser(@RequestBody Users user) {
-		return this.service.save(user);
-
+	public ResponseEntity<?> createUser(@RequestBody Users user) {
+		try {
+			return new Response().sucefull(this.service.save(user));
+		} catch (UserAlreadyExistsException e) {
+			return new Response().alreadyExists("User already exists");
+		}
+		catch (InvalidUserException e) {
+			return new Response().invalidParams("This user is invalid");
+		}
 	}
 
 	@GetMapping("/users/{id}")
 	@ResponseBody
-	public Optional<Users> getUserById(@PathVariable("Id") int id) {
-		return this.service.getUsersById(id);
-
+	public ResponseEntity<?> getUserById(@PathVariable("id") int id) {
+		try {
+			return new Response().sucefull(this.service.getUsersById(id));
+		} catch (UserNotFoundException e) {
+			return new Response().notFound("User not found");
+		}
 	}
 
 	@PutMapping("/users/{id}")
 	@ResponseBody
-	public Users setUserById(@PathVariable("id") int id, @RequestBody Users user) {
-		return this.service.setUserById(id, user);
+	public ResponseEntity<?> update(@PathVariable("id") int id, @RequestBody Users user) {
+		try {
+			return new Response().sucefull(this.service.updateUserById(id, user));
+		} catch (UserNotFoundException e) {
+			return new Response().notFound("User not found to upddate");
+		}
 
 	}
 
