@@ -9,7 +9,7 @@ import javax.persistence.Id;
 public class Users {
 
 	@Id
-	@GeneratedValue (strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	private String name;
 	private String email;
@@ -46,5 +46,6 @@ public class Users {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
 
 }
