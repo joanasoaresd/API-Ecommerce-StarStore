@@ -4,9 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,9 +20,16 @@ public class UsersController {
 	@Autowired
 	private UsersService service;
 
-	@GetMapping("/ola")
-	public String oi() {
-		return "Olá Mundo!";
+	@PostMapping("/login")
+	public String authenticationToken(@RequestBody Users user) {
+		try {
+			System.out.println("Entrou no try");
+			return this.service.authenticate(user.getEmail(), user.getPassword());
+		} catch (Exception e) {
+			System.out.println("Entrou no catch");
+			return "ERROOO";
+
+		}
 
 	}
 
