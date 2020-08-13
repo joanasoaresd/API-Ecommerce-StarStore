@@ -36,7 +36,6 @@ public class JwtTokenUtil implements Serializable {
 
 	
 	private Claims getAllClaimsFromToken(String token) {
-		System.out.println("Entrou aqui");
 		Claims claims;
 		try {
 			claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
@@ -61,7 +60,6 @@ public class JwtTokenUtil implements Serializable {
 	// gera token para user
 	public String generateToken(String email) {
 		Map<String, Object> claims = new HashMap<String, Object>();
-		System.out.println("Criou token");
 		return doGenerateToken(claims, email);
 	}
 
