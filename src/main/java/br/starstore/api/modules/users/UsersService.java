@@ -13,6 +13,10 @@ import br.starstore.api.entities.Users;
 import br.starstore.api.exceptions.InvalidUserException;
 import br.starstore.api.exceptions.UserAlreadyExistsException;
 import br.starstore.api.exceptions.UserNotFoundException;
+import br.starstore.api.handlers.Response;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ApiResponse;
 
 @Service
 public class UsersService {
@@ -23,10 +27,14 @@ public class UsersService {
 	@Autowired
 	private JwtTokenUtil jwttoken;
 
+	@ApiOperation(value = "Cadastrar um novo usuário", response = Response.class, notes = "Essa operação salva um novo registro com as informações de pessoa.")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Retorna um ResponseModel com uma mensagem de sucesso", response = Response.class),
+			@ApiResponse(code = 500, message = "Caso tenhamos algum erro vamos retornar um ResponseModel com a Exception", response = Response.class) })
 	public Users save(Users user) throws UserAlreadyExistsException, InvalidUserException {
-		if(repository.findByEmail(user.getEmail()).isPresent()) {
+		if (repository.findByEmail(user.getEmail()).isPresent()) {
 			throw new UserAlreadyExistsException();
-		}else if(!isValid(user)){
+		} else if (!isValid(user)) {
 			throw new InvalidUserException();
 		}
 		return this.repository.save(user);
@@ -36,21 +44,20 @@ public class UsersService {
 		return this.repository.findAll();
 	}
 
-
 	public Optional<Users> getUsersById(Integer id) throws UserNotFoundException {
 		Optional<Users> user = this.repository.findById(id);
-		if(user.isEmpty()) {
+		if (!this.isValid(user.get())) {
 			throw new UserNotFoundException();
 		}
 		return user;
-	
+
 	}
 
 	public Users updateUserById(Integer id, Users user) throws UserNotFoundException {
-		if(!(repository.count() == 0 || id < 0 || id > repository.count())) {
+		if (!(repository.count() == 0 || id < 0 || id > repository.count())) {
 			Optional<Users> oldUser = this.repository.findById(id);
-			if(oldUser.isPresent()) {
-				int idOldUser = oldUser.get().getId(); 
+			if (oldUser.isPresent()) {
+				int idOldUser = oldUser.get().getId();
 				user.setId(idOldUser);
 				return repository.save(user);
 			}
@@ -64,7 +71,7 @@ public class UsersService {
 			Optional<Users> optUser = repository.findByEmail(email);
 			if (optUser.isPresent() && password.equals(optUser.get().getPassword())) {
 				return this.jwttoken.generateToken(email);
-			}else {
+			} else {
 				throw new BadCredentialsException("INVALID_CREDENTIALS");
 			}
 
@@ -74,8 +81,8 @@ public class UsersService {
 			throw new Exception("INVALID_CREDENTIALS", e);
 		}
 	}
-	
+
 	public boolean isValid(Users user) {
-		return !user.getEmail().isBlank() && !user.getName().isBlank() && !user.getPassword().isBlank();
+		return !user.getEmail().isEmpty() && !user.getName().isEmpty() && !user.getPassword().isEmpty();
 	}
 }
